@@ -40,36 +40,6 @@ The system uses comprehensive medical datasets containing:
 - `precautions_df.csv`: Preventive measures and precautions
 - `Symptom-severity.csv`: Symptom severity classifications
 
-## 🏗️ Project Structure
-
-```
-Disease-Prediction-and-Medical-Recommendation-System/
-├── dataset/                    # Medical datasets
-│   ├── Training.csv
-│   ├── symptoms_df.csv
-│   ├── description.csv
-│   ├── medications.csv
-│   ├── diets.csv
-│   ├── workout_df.csv
-│   ├── precautions_df.csv
-│   └── Symptom-severity.csv
-├── model/                      # Trained ML models
-│   └── RandomForest.pkl
-├── templates/                  # HTML templates
-│   └── index.html
-├── static/                     # Static assets
-│   ├── bgCover.jpg
-│   └── img.png
-├── screenshots/                # Application screenshots
-│   ├── ss1.jpg
-│   ├── ss2.jpg
-│   └── ss3.jpg
-├── main.py                     # Flask web application
-├── disease_prediction_system.ipynb  # Model training notebook
-├── requirements.txt            # Python dependencies
-└── README.md
-```
-
 ## 🔧 Installation & Setup
 
 ### Prerequisites
@@ -121,20 +91,40 @@ Disease-Prediction-and-Medical-Recommendation-System/
 ## 📸 Screenshots
 
  ![](https://github.com/sohamvsonar/Disease-Prediction-and-Medical-Recommendation-System/blob/main/screenshots/ss2.jpg)
- 
+
+## 🏗️ Project Structure
+
+```
+Disease-Prediction-and-Medical-Recommendation-System/
+├── dataset/                    # Medical datasets
+│   ├── Training.csv
+│   ├── symptoms_df.csv
+│   ├── description.csv
+│   ├── medications.csv
+│   ├── diets.csv
+│   ├── workout_df.csv
+│   ├── precautions_df.csv
+│   └── Symptom-severity.csv
+├── model/                      # Trained ML models
+│   └── RandomForest.pkl
+├── templates/                  # HTML templates
+│   └── index.html
+├── static/                     # Static assets
+│   ├── bgCover.jpg
+│   └── img.png
+├── screenshots/                # Application screenshots
+│   ├── ss1.jpg
+│   ├── ss2.jpg
+│   └── ss3.jpg
+├── main.py                     # Flask web application
+├── disease_prediction_system.ipynb  # Model training notebook
+├── requirements.txt            # Python dependencies
+└── README.md
+```
+
 
 ## ⚠️ Disclaimer
 
 This system is for educational and informational purposes only. It should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals for medical concerns.
 
 =======
-## Collaborators
-
-- Soham Sonar
-- Kunal Rajput
-- Tanmay Pramanick
-  
-## Project Files Overview
-
-- `main.py`: Entry point for the Flask web application.
-- `disease_prediction_system.ipynb`: Jupyter Notebook with data preprocessing and model training.
