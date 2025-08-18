@@ -1,55 +1,133 @@
 # Disease Prediction and Medical Recommendation System 🩺
 
-This repository contains the implementation of a Disease Prediction and Medical Recommendation System developed for the CS 584 Machine Learning course.
+A machine learning-powered web application that predicts diseases based on user-entered symptoms and provides comprehensive health recommendations including medications, dietary suggestions, and exercise routines.
 
-## Introduction
-The Disease Prediction and Medical Recommendation System leverages machine learning techniques to predict diseases based on user-entered symptoms. It provides recommendations for medications, diets, and workouts tailored to specific diseases. The project uses a dataset from Kaggle comprising symptoms, diseases, medications, and other medical attributes to train and evaluate machine learning models.
+## 🎯 Features
 
-## Project Overview
-The project files are organized into the following directories:
+- **Intelligent Disease Prediction**: Uses Random Forest machine learning model with 100% accuracy
+- **Symptom Spell Correction**: Advanced fuzzy matching to correct misspelled symptoms
+- **Comprehensive Health Recommendations**: 
+  - Disease descriptions and information
+  - Personalized medication suggestions
+  - Dietary recommendations
+  - Exercise and workout plans
+  - Preventive precautions
+- **User-Friendly Web Interface**: Clean, responsive design with Bootstrap
+- **Real-time Predictions**: Instant results through Flask web application
 
-### 1. kaggle_dataset
-- `description.csv`: Descriptions of diseases.
-- `diets.csv`: Recommended diets for diseases.
-- `medications.csv`: Medications prescribed for diseases.
-- `precautions_df.csv`: Precautions to be taken for diseases.
-- `Symptom-severity.csv`: Severity of symptoms.
-- `symptoms_df.csv`: Symptoms with corresponding disease labels.
-- `Training.csv`: Dataset for training machine learning models.
-- `workout_df.csv`: Recommended workouts for diseases.
+## 🚀 Technologies Used
 
-### 2. model
-- `RandomForest.pkl`: Trained Random Forest model for disease prediction.
+- **Backend**: Python, Flask
+- **Machine Learning**: scikit-learn, Random Forest Classifier
+- **Data Processing**: pandas, numpy
+- **Frontend**: HTML, CSS, Bootstrap 5
+- **Model Persistence**: pickle
 
-### 3. templates
-- `index.html`: Frontend interface for the Disease Prediction System.
+## 📊 Dataset Information
 
-### 4. static
-- `bgCover.jpg`, `img.png` : Images utilized in the frontend webpage.
+The system uses comprehensive medical datasets containing:
+- **41 Diseases**: Including common conditions like diabetes, hypertension, allergies, etc.
+- **132 Symptoms**: Comprehensive symptom database for accurate predictions
+- **Medical Recommendations**: Curated medications, diets, and workout plans for each disease
 
-### 5. screenshots
-- Includes screenshots of the project.
+### Dataset Files (located in `dataset/`):
+- `Training.csv`: Main training dataset with symptoms and disease labels
+- `symptoms_df.csv`: Symptom database with disease mappings
+- `description.csv`: Detailed disease descriptions
+- `medications.csv`: Medication recommendations for each disease
+- `diets.csv`: Dietary recommendations and nutrition plans
+- `workout_df.csv`: Exercise and workout suggestions
+- `precautions_df.csv`: Preventive measures and precautions
+- `Symptom-severity.csv`: Symptom severity classifications
 
+## 🏗️ Project Structure
 
-## How to Run the Project
-To run the Disease Prediction and Medical Recommendation System:
+```
+Disease-Prediction-and-Medical-Recommendation-System/
+├── dataset/                    # Medical datasets
+│   ├── Training.csv
+│   ├── symptoms_df.csv
+│   ├── description.csv
+│   ├── medications.csv
+│   ├── diets.csv
+│   ├── workout_df.csv
+│   ├── precautions_df.csv
+│   └── Symptom-severity.csv
+├── model/                      # Trained ML models
+│   └── RandomForest.pkl
+├── templates/                  # HTML templates
+│   └── index.html
+├── static/                     # Static assets
+│   ├── bgCover.jpg
+│   └── img.png
+├── screenshots/                # Application screenshots
+│   ├── ss1.jpg
+│   ├── ss2.jpg
+│   └── ss3.jpg
+├── main.py                     # Flask web application
+├── disease_prediction_system.ipynb  # Model training notebook
+├── requirements.txt            # Python dependencies
+└── README.md
+```
 
-1. **Install required Python libraries:**
+## 🔧 Installation & Setup
+
+### Prerequisites
+- Python 3.7+
+- pip package manager
+
+### Installation Steps
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/sohamvsonar/Disease-Prediction-and-Medical-Recommendation-System.git
+   cd Disease-Prediction-and-Medical-Recommendation-System
+   ```
+
+2. **Install required dependencies:**
    ```bash
    pip install -r requirements.txt
+   ```
 
-2. **Navigate to the project directory:**
-   ```bash
-   cd ML_project
-
-3. **Start the Flask application:**
+3. **Run the Flask application:**
    ```bash
    python main.py
+   ```
 
-4. **Access the web interface in your browser at:**
-   ```bash
+4. **Access the application:**
+   Open your web browser and navigate to:
+   ```
    http://localhost:5000
+   ```
 
+## 📱 Usage
+
+1. **Enter Symptoms**: Type your symptoms separated by commas (e.g., "fever, headache, nausea")
+2. **Submit**: Click the predict button to get your results
+3. **View Results**: Get comprehensive information including:
+   - Predicted disease
+   - Disease description
+   - Recommended medications
+   - Dietary suggestions
+   - Exercise plans
+   - Preventive precautions
+
+## 👥 Team Members
+
+- **Soham Sonar**
+- **Tanmay Pramanick**  
+- **Kunal Rajput**
+
+## 📸 Screenshots
+
+ ![](https://github.com/sohamvsonar/Disease-Prediction-and-Medical-Recommendation-System/blob/main/screenshots/ss2.jpg)
+ 
+
+## ⚠️ Disclaimer
+
+This system is for educational and informational purposes only. It should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals for medical concerns.
+
+=======
 ## Collaborators
 
 - Soham Sonar
@@ -60,4 +138,3 @@ To run the Disease Prediction and Medical Recommendation System:
 
 - `main.py`: Entry point for the Flask web application.
 - `disease_prediction_system.ipynb`: Jupyter Notebook with data preprocessing and model training.
-
