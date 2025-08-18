@@ -122,26 +122,19 @@ Disease-Prediction-and-Medical-Recommendation-System/
 
  ![](https://github.com/sohamvsonar/Disease-Prediction-and-Medical-Recommendation-System/blob/main/screenshots/ss2.jpg)
  
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 🔮 Future Enhancements
-
-- **Mobile Application**: React Native or Flutter mobile app
-- **Advanced ML Models**: Deep learning models for improved accuracy
-- **Symptom Severity**: Incorporate symptom severity levels
-- **Multi-language Support**: Support for multiple languages
-- **Doctor Integration**: Connect with healthcare professionals
-- **Medical History**: User profile and medical history tracking
-- **Real-time Chat**: Integration with medical chatbots
 
 ## ⚠️ Disclaimer
 
 This system is for educational and informational purposes only. It should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals for medical concerns.
 
+=======
+## Collaborators
 
+- Soham Sonar
+- Kunal Rajput
+- Tanmay Pramanick
+  
+## Project Files Overview
+
+- `main.py`: Entry point for the Flask web application.
+- `disease_prediction_system.ipynb`: Jupyter Notebook with data preprocessing and model training.
