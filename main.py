@@ -12,12 +12,12 @@ app = Flask(__name__)
 
 # Loading the datasets from Kaggle website
 
-sym_des = pd.read_csv("kaggle_dataset/symptoms_df.csv")
-precautions = pd.read_csv("kaggle_dataset/precautions_df.csv")
-workout = pd.read_csv("kaggle_dataset/workout_df.csv")
-description = pd.read_csv("kaggle_dataset/description.csv")
-medications = pd.read_csv('kaggle_dataset/medications.csv')
-diets = pd.read_csv("kaggle_dataset/diets.csv")
+sym_des = pd.read_csv("dataset/symptoms_df.csv")
+precautions = pd.read_csv("dataset/precautions_df.csv")
+workout = pd.read_csv("dataset/workout_df.csv")
+description = pd.read_csv("dataset/description.csv")
+medications = pd.read_csv("dataset/medications.csv")
+diets = pd.read_csv("dataset/diets.csv")
 
 Rf = pickle.load(open('model/RandomForest.pkl','rb'))
 
