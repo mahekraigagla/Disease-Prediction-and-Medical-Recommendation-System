@@ -86,6 +86,7 @@
             <div class="chat-header">
         <h2>HealthBot - Disease Prediction Assistant</h2>
         <div class="header-actions">
+          <button id="emergencyBtn" class="toggle-btn" style="background:#dc3545;color:#fff;" onclick="showHospitals()">🚨 Emergency</button>
           <button id="downloadBtn" class="toggle-btn">Download Report</button>
           <button id="darkBtn" class="toggle-btn">Dark Mode</button>
           <button id="fontBtn" class="toggle-btn">A+</button>
@@ -119,7 +120,7 @@
     const suggestBox = document.getElementById('suggest');
     const micBtn = document.getElementById('mic');
 
-    const state = { step:'name', name:'', age:'', gender:'', symptoms:[], negatives:[], lastPrediction:null, allSymptoms:[], lastSuggestions:[] };
+    const state = { step:'name', name:'', age:'', gender:'', symptoms:[], negatives:[], duration_days:null, trend:null, askedTimeline:false, lastPrediction:null, allSymptoms:[], lastSuggestions:[] };
 
     fetch('/symptom_list').then(r=>r.json()).then(list=> state.allSymptoms = list);
 
@@ -130,6 +131,9 @@
       document.getElementById('patient-info').textContent = patient || 'Not provided yet';
       const all = state.symptoms.concat(state.negatives.map(n=>'no '+n));
       document.getElementById('symptoms-info').textContent = all.join(', ') || 'Not provided yet';
+      if(state.duration_days!=null || state.trend){
+        document.getElementById('status-info').textContent = `In progress${state.duration_days!=null?`, ${state.duration_days}d`:''}${state.trend?`, ${state.trend}`:''}`;
+      }
     }
     function reset(){ chat.innerHTML = `<div class="message bot-message">Hello! 👋 I'm HealthBot.<br/>I'm here to help with disease prediction and medical recommendations.<br/>Let's start by getting to know you.<br/><br/><strong>What’s your name?</strong></div>`; input.placeholder='Type your answer...'; input.value=''; state.step='name'; state.name=''; state.age=''; state.gender=''; state.symptoms=[]; state.negatives=[]; state.lastPrediction=null; updateSidebar(); document.getElementById('status-info').textContent='In progress'; suggestBox.style.display='none'; suggestBox.innerHTML=''; }
 
@@ -165,9 +169,35 @@
 
     async function maybePredict(){
       document.getElementById('status-info').textContent='Thinking...';
-      const res = await fetch('/predict', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name: state.name, age: state.age, gender: state.gender, symptoms: state.symptoms.join(','), negatives: state.negatives }) });
+      const res = await fetch('/predict', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name: state.name, age: state.age, gender: state.gender, symptoms: state.symptoms.join(','), negatives: state.negatives, duration_days: state.duration_days, trend: state.trend }) });
       const data = await res.json();
       if(data.error){ appendBot(`❌ ${data.error}`); document.getElementById('status-info').textContent='Awaiting input'; return; }
+
+      // Check for emergency alerts first
+      if(data.emergency_alerts && data.emergency_alerts.length > 0){
+        document.getElementById('status-info').textContent='EMERGENCY DETECTED';
+        let emergencyHtml = '<div style="background:#ff4444;color:#fff;padding:15px;border-radius:10px;margin:10px 0;">';
+        for(const alert of data.emergency_alerts){
+          emergencyHtml += `<div style="margin:5px 0;"><strong>${alert.message}</strong></div>`;
+        }
+        emergencyHtml += '</div>';
+        emergencyHtml += '<div style="background:#fff3cd;color:#856404;padding:10px;border-radius:8px;margin:10px 0;">';
+        emergencyHtml += '<strong>Emergency Contacts:</strong><br/>';
+        emergencyHtml += '🚑 Ambulance: 108<br/>';
+        emergencyHtml += '👮 Police: 100<br/>';
+        emergencyHtml += '🔥 Fire: 101<br/>';
+        emergencyHtml += '<button onclick="showHospitals()" style="background:#dc3545;color:#fff;border:none;padding:8px 15px;border-radius:5px;margin-top:10px;cursor:pointer;">Find Nearest Hospitals</button>';
+        emergencyHtml += '</div>';
+        appendBot(emergencyHtml, true);
+        
+        // Still show prediction if available
+        if(data.top_k && data.top_k.length){
+          let html = `<br/><strong>Current candidates:</strong>`;
+          html += `<div class="candidates">${data.top_k.map(c=>`<div class="candidate"><div><strong>${c.disease}</strong> (${(c.prob*100).toFixed(0)}%)</div><div class="bar"><span style="width:${(c.prob*100).toFixed(0)}%"></span></div></div>`).join('')}</div>`;
+          appendBot(html, true);
+        }
+        return;
+      }
 
       if(data.need_more){
         document.getElementById('status-info').textContent='Need more symptoms';
@@ -180,13 +210,30 @@
 
       state.lastPrediction = data;
       document.getElementById('status-info').textContent='Prediction complete';
-      appendBot(`
-        <strong>Disease Predicted:</strong> ${data.predicted_disease}<br/><br/>
-        <strong>Description:</strong> ${data.dis_des}<br/><br/>
-        <strong>Precautions:</strong> ${data.my_precautions.join(', ')}<br/><br/>
-        <strong>Medications:</strong> ${data.medications.join(', ')}<br/><br/>
-        <strong>Diet:</strong> ${data.my_diet.join(', ')}<br/><br/>
-        <strong>Workout:</strong> ${data.workout.join(', ')}`, true);
+      
+      let resultHtml = `<strong>Disease Predicted:</strong> ${data.predicted_disease}<br/><br/>`;
+      
+      // Check for red flags
+      if(data.red_flags && data.red_flags.length > 0){
+        resultHtml += '<div style="background:#ff6b6b;color:#fff;padding:15px;border-radius:10px;margin:10px 0;">';
+        for(const flag of data.red_flags){
+          resultHtml += `<div style="margin:5px 0;"><strong>${flag.message}</strong></div>`;
+        }
+        resultHtml += '</div>';
+      }
+      
+      resultHtml += `<strong>Description:</strong> ${data.dis_des}<br/><br/>`;
+      resultHtml += `<strong>Precautions:</strong> ${data.my_precautions.join(', ')}<br/><br/>`;
+      resultHtml += `<strong>Medications:</strong> ${data.medications.join(', ')}<br/><br/>`;
+      resultHtml += `<strong>Diet:</strong> ${data.my_diet.join(', ')}<br/><br/>`;
+      resultHtml += `<strong>Workout:</strong> ${data.workout.join(', ')}`;
+      
+      // Add emergency contact button if red flags detected
+      if(data.red_flags && data.red_flags.length > 0){
+        resultHtml += '<br/><br/><button onclick="showHospitals()" style="background:#dc3545;color:#fff;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;margin-top:10px;">Find Nearest Hospitals</button>';
+      }
+      
+      appendBot(resultHtml, true);
     }
 
     async function handleSend(){
@@ -198,6 +245,27 @@
         const parts = text.includes(',') ? text.split(',').map(s=>s.trim()).filter(Boolean) : extractFromParagraph(text);
         for(const p of parts){ if(!state.symptoms.includes(p)) state.symptoms.push(p); }
             updateSidebar();
+        if(!state.askedTimeline){
+          state.askedTimeline = true;
+          appendBot('Since when do you have these symptoms? Please enter days (e.g., 5).');
+          state.step = 'duration';
+          return;
+        }
+        await maybePredict();
+        return;
+      }
+      if(state.step==='duration'){
+        const n = parseInt(text, 10);
+        if(!isNaN(n) && n >= 0){ state.duration_days = n; }
+        appendBot('Are your symptoms getting worse, better, or stable?');
+        state.step = 'trend';
+        return;
+      }
+      if(state.step==='trend'){
+        const t = text.toLowerCase();
+        if(['worse','better','stable'].includes(t)) state.trend = t;
+        updateSidebar();
+        state.step = 'symptoms';
         await maybePredict();
         return;
       }
@@ -232,6 +300,48 @@
       w.document.write(`<!DOCTYPE html><html><head><title>Report</title></head><body>${body}</body></html>`);
       w.document.close(); w.focus(); w.print();
     });
+
+    // Emergency functions
+    async function showHospitals(){
+      try {
+        const response = await fetch('/hospitals');
+        const hospitals = await response.json();
+        
+        let hospitalHtml = '<div style="background:#e8f5e8;padding:15px;border-radius:10px;margin:10px 0;">';
+        hospitalHtml += '<h3 style="color:#2d5a2d;margin-bottom:15px;">🏥 Nearest Hospitals</h3>';
+        
+        hospitals.forEach(hospital => {
+          hospitalHtml += `<div style="background:#fff;padding:10px;margin:10px 0;border-radius:8px;border-left:4px solid #28a745;">`;
+          hospitalHtml += `<strong>${hospital.name}</strong><br/>`;
+          hospitalHtml += `📍 ${hospital.address}<br/>`;
+          hospitalHtml += `📞 ${hospital.phone}<br/>`;
+          hospitalHtml += `📏 ${hospital.distance}<br/>`;
+          hospitalHtml += `🏥 Emergency Services: ${hospital.emergency_services ? 'Yes' : 'No'}<br/>`;
+          hospitalHtml += `⚕️ Specialties: ${hospital.specialties.join(', ')}`;
+          hospitalHtml += `</div>`;
+        });
+        
+        hospitalHtml += '</div>';
+        hospitalHtml += '<div style="background:#fff3cd;color:#856404;padding:10px;border-radius:8px;margin:10px 0;">';
+        hospitalHtml += '<strong>Emergency Contacts:</strong><br/>';
+        hospitalHtml += '🚑 Ambulance: 108<br/>';
+        hospitalHtml += '👮 Police: 100<br/>';
+        hospitalHtml += '🔥 Fire: 101<br/>';
+        hospitalHtml += '👩 Women Helpline: 1091<br/>';
+        hospitalHtml += '👶 Child Helpline: 1098';
+        hospitalHtml += '</div>';
+        
+        appendBot(hospitalHtml, true);
+      } catch (error) {
+        appendBot('❌ Error fetching hospital information. Please call emergency services directly.', true);
+      }
+    }
+
+    function callEmergency(number){
+      if(confirm(`Call emergency number ${number}?`)){
+        window.open(`tel:${number}`, '_self');
+      }
+    }
 
     reset();
     </script>
